@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop" xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.2.xsd
+            http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
+    <!-- 启用spring mvc 注解 -->
+    <context:annotation-config />
+    <!-- 完成请求和注解POJO的映射 -->
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
+    <!-- 对转向页面的路径解析。prefix：前缀， suffix：后缀 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:prefix="/WEB-INF/jsp/" p:suffix=".jsp" />
+    <context:component-scan base-package="com.fjsh.rpc" />
+    <context:property-placeholder location="classpath:config.properties"/>
+    <!-- 配置服务发现组件 -->
+    <bean id="serviceDiscovery" class="com.fjsh.rpc.client.ServiceDiscovery">
+        <constructor-arg name="registryAddress" value="${registry.address}"/>
+        <constructor-arg name="zk_session_timeout" value="${zk_session_timeout}"/>
+        <constructor-arg name="zk_registry_path" value="${zk_registry_path}"/>
+    </bean>
+    <!-- 配置 RPC 代理 -->
+    <bean id="rpcProxy" class="com.fjsh.rpc.client.RpcProxy">
+        <constructor-arg name="serviceDiscovery" ref="serviceDiscovery"/>
+    </bean> 
+     <!-- 配置服务请求超时时间 -->
+    <bean id="rpcClient" class="com.fjsh.rpc.client.RpcClient" lazy-init="false" init-method="init">
+        <property name="reqtimeout" value="${reqtimeout}"></property>
+    </bean>    
+</beans>

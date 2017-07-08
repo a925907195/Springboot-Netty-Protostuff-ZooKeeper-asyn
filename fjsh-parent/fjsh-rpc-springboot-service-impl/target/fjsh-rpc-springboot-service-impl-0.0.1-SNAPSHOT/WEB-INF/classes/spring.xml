@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx" xmlns:p="http://www.springframework.org/schema/p" xmlns:util="http://www.springframework.org/schema/util" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+    xmlns:cache="http://www.springframework.org/schema/cache"
+    xsi:schemaLocation="
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd
+    http://www.springframework.org/schema/jdbc
+    http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd
+    http://www.springframework.org/schema/cache
+    http://www.springframework.org/schema/cache/spring-cache-3.1.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop.xsd
+    http://www.springframework.org/schema/util
+    http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <!-- 自动扫描web包 ,将带有注解的类 纳入spring容器管理 -->
+    <context:component-scan base-package="com.fjsh.rpc"></context:component-scan>
+    <context:property-placeholder location="classpath:config.properties"/>
+    
+    <!-- 配置服务注册组件 -->
+    <bean id="serviceRegistry" class="com.fjsh.rpc.server.ServiceRegistry">
+        <constructor-arg name="registryAddress" value="${registry.address}"/>
+    </bean>
+
+    <!-- 配置 RPC 服务器 ，默认地址为本机ip地址-->
+    <bean id="rpcServer" class="com.fjsh.rpc.server.RpcServer">
+        <constructor-arg name="serverport" value="${server.port}"/>
+        <constructor-arg name="serviceRegistry" ref="serviceRegistry"/>
+    </bean>
+    <!-- 配置服务在zookeeper上的目录地址，默认数据地址为目录地址下的data-->
+    <bean id="constant" class="com.fjsh.rpc.common.Constant">
+        <property name="ZK_REGISTRY_PATH" value="${zk_registry_path}"></property>
+        <property name="ZK_DATA_PATH" value="${zk_data_path}"></property>
+        <property name="ZK_SESSION_TIMEOUT" value="${zk_session_timeout}"></property>        
+    </bean>
+</beans>
