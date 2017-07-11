@@ -13,12 +13,14 @@ import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.HashedWheelTimer;
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fjsh.rpc.client.utils.NettyChannelLRUMap;
+import com.fjsh.rpc.client.utils.NettyCountDownlatchLRUMap;
 import com.fjsh.rpc.client.utils.NettyResponseLRUMap;
 import com.fjsh.rpc.common.RpcDecoder;
 import com.fjsh.rpc.common.RpcEncoder;
@@ -109,15 +111,19 @@ public void connect(final int port,final String host) throws Exception {
 ////             obj.wait(reqtimeout); // 未收到响应，使线程等待2000ms
 //        	 obj.wait(5000); // 未收到响应，使线程等待2000ms
 //         }
-         for(;;)
-         {
-        	 response=NettyResponseLRUMap.get(request.getRequestId());
-        	 if(null!=response)
-        	 {
-        		NettyResponseLRUMap.remove(request.getRequestId());
-        		break;
-        	 }        	 
-         }
+    	CountDownLatch waitResp = new CountDownLatch(1);
+    	NettyCountDownlatchLRUMap.add(request.getRequestId(), waitResp);
+    	waitResp.await(reqtimeout, TimeUnit.MILLISECONDS);
+    	response=NettyResponseLRUMap.get(request.getRequestId());
+//         for(;;)
+//         {
+//        	 response=NettyResponseLRUMap.get(request.getRequestId());
+//        	 if(null!=response)
+//        	 {
+//        		NettyResponseLRUMap.remove(request.getRequestId());
+//        		break;
+//        	 }        	 
+//         }
          
       
   

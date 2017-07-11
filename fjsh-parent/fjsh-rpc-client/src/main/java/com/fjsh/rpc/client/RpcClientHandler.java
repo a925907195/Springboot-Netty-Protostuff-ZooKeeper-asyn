@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fjsh.rpc.client.utils.NettyChannelLRUMap;
+import com.fjsh.rpc.client.utils.NettyCountDownlatchLRUMap;
 import com.fjsh.rpc.client.utils.NettyResponseLRUMap;
 import com.fjsh.rpc.common.RpcDecoder;
 import com.fjsh.rpc.common.RpcEncoder;
@@ -109,7 +110,7 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<RpcResponse> i
             case REPLY:{
             	// this.response = rpcResponse; 
             	 NettyResponseLRUMap.add(rpcResponse.getRequestId(), rpcResponse);
-            	// RpcClient.obj.notifyAll();
+            	NettyCountDownlatchLRUMap.get(rpcResponse.getRequestId()).countDown();
             	 System.out.println("receive data"+rpcResponse.getResult());
             }
             default:break;
