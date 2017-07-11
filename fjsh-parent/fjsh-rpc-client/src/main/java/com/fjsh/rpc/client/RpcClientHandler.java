@@ -23,6 +23,8 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fjsh.rpc.client.utils.NettyChannelLRUMap;
+import com.fjsh.rpc.client.utils.NettyResponseLRUMap;
 import com.fjsh.rpc.common.RpcDecoder;
 import com.fjsh.rpc.common.RpcEncoder;
 import com.fjsh.rpc.common.RpcRequest;
@@ -30,6 +32,7 @@ import com.fjsh.rpc.common.RpcResponse;
 import com.fjsh.rpc.connection.utils.BaseMsg;
 import com.fjsh.rpc.connection.utils.MsgType;
 import com.fjsh.rpc.connection.utils.PingMsg;
+
 import io.netty.channel.ChannelHandler.Sharable;
 @Sharable
 public class RpcClientHandler extends SimpleChannelInboundHandler<RpcResponse> implements TimerTask {
@@ -43,9 +46,9 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<RpcResponse> i
     private String host;
     private int port;
     private static int reqtimeout;//请求超时时间 
-	private RpcResponse response;
+//	private RpcResponse response;
 	// private int currentTime = 0;
-    private final Object obj = new Object();
+   // private final Object obj = new Object();
     private int attempts;//重试次数
     private final Timer timer;//定时器
     public ChannelHandler[] handlers;
@@ -104,14 +107,16 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<RpcResponse> i
                 channelHandlerContext.writeAndFlush(replyMsg);*/
             }break;
             case REPLY:{
-            	 this.response = rpcResponse; 
+            	// this.response = rpcResponse; 
+            	 NettyResponseLRUMap.add(rpcResponse.getRequestId(), rpcResponse);
+            	// RpcClient.obj.notifyAll();
             	 System.out.println("receive data"+rpcResponse.getResult());
             }
             default:break;
         }
-   	 synchronized (obj) {
-            obj.notifyAll(); // 收到响应，唤醒线程
-        }
+//   	 synchronized (obj) {
+//            obj.notifyAll(); // 收到响应，唤醒线程
+//        }
 	}
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {

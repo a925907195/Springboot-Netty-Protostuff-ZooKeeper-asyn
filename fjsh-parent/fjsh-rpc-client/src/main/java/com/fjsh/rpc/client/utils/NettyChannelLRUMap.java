@@ -1,4 +1,4 @@
-package com.fjsh.rpc.client;
+package com.fjsh.rpc.client.utils;
 
 import io.netty.channel.Channel;
 import io.netty.channel.socket.SocketChannel;

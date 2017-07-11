@@ -18,6 +18,8 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fjsh.rpc.client.utils.NettyChannelLRUMap;
+import com.fjsh.rpc.client.utils.NettyResponseLRUMap;
 import com.fjsh.rpc.common.RpcDecoder;
 import com.fjsh.rpc.common.RpcEncoder;
 import com.fjsh.rpc.common.RpcRequest;
@@ -35,10 +37,10 @@ public class RpcClient  {
     private String host;
     private int port;
     private static int reqtimeout;//请求超时时间 
-	private RpcResponse response;
+//	private RpcResponse response;
 	 private int currentTime = 0;
 	 private Bootstrap bootstrap=new Bootstrap();
-    private final Object obj = new Object();
+    public static final Object obj = new Object();
 
     public RpcClient(String host, int port) {
         this.host = host;
@@ -84,6 +86,7 @@ public void connect(final int port,final String host) throws Exception {
     public RpcResponse send(RpcRequest request) throws Exception {
     	long start=System.currentTimeMillis();
     	String keyString=String.valueOf(host+port);	
+    	RpcResponse response=new RpcResponse();
     	while(true)
     	{
     		if(NettyChannelLRUMap.get(keyString)!=null)
@@ -96,22 +99,34 @@ public void connect(final int port,final String host) throws Exception {
 				connect(port, host);
 			}
     	}
-    	 for(int i=0;i<1000;i++)
-    	 {    		 		
-    		 Channel channel= NettyChannelLRUMap.get(keyString);
- 			channel.writeAndFlush(request); 
- 			
-    	 }
+//    	 for(int i=0;i<10000;i++)
+//    	 {    		 		
+//    		 Channel channel= NettyChannelLRUMap.get(keyString);
+// 			channel.writeAndFlush(request); 
+// 			
+//    	 }
 //         synchronized (obj) {
-//             obj.wait(reqtimeout); // 未收到响应，使线程等待2000ms
+////             obj.wait(reqtimeout); // 未收到响应，使线程等待2000ms
+//        	 obj.wait(5000); // 未收到响应，使线程等待2000ms
 //         }
+         for(;;)
+         {
+        	 response=NettyResponseLRUMap.get(request.getRequestId());
+        	 if(null!=response)
+        	 {
+        		NettyResponseLRUMap.remove(request.getRequestId());
+        		break;
+        	 }        	 
+         }
+         
       
   
 //         if (response != null) {
 //             future.channel().closeFuture().sync();
 //         }
-         response=new RpcResponse();
-         response.setResult("fjdkf");
+//         response=new RpcResponse();
+//         response.setResult("fjdkf");
+         System.out.println("最终返回到客户端的信息:"+response.getResult());
          return response;      
     }
     public int getReqtimeout() {
