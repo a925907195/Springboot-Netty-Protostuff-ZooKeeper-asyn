@@ -105,7 +105,7 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<RpcResponse> i
             }break;
             case REPLY:{
             	 this.response = rpcResponse; 
-            	 System.out.println(rpcResponse.getResult());
+            	 System.out.println("receive data"+rpcResponse.getResult());
             }
             default:break;
         }
@@ -134,8 +134,7 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<RpcResponse> i
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         
-        System.out.println("当前链路已经激活了，重连尝试次数重新置为0");
-        
+        System.out.println("当前链路已经激活了，重连尝试次数重新置为0");        
         attempts = 0;
         //判断连接结果，如果没有连接成功，则监听连接网络操作位SelectionKey.OP_CONNECT。如果连接成功，则调用pipeline().fireChannelActive()将监听位修改为READ。
         ctx.fireChannelActive();
@@ -145,55 +144,8 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<RpcResponse> i
         logger.error("client caught exception", cause);
         NettyChannelLRUMap.remove((SocketChannel)ctx.channel());
         ctx.close();
-    }    
-//    public RpcResponse send(RpcRequest request) throws Exception {
-//    	long start=System.currentTimeMillis();
-//    	ChannelFuture future=null;
-//    	Channel channel=null;
-//    	String keyString=String.valueOf(host+port);
-//    	 //自己定义
-//        AskMsg askMsg=new AskMsg();    
-//        askMsg.setClientId(keyString);
-//        request.setBaseMsg(askMsg);
-//    	if(NettyChannelLRUMap.get(keyString) != null)
-//    	{
-//    		channel=(Channel) NettyChannelLRUMap.get(keyString);
-//    	}
-//    	else {
-//			//如果没有新建链接    	
-//    		 EventLoopGroup group = new NioEventLoopGroup();   	      
-//    		
-//    	            bootstrap.group(group).channel(NioSocketChannel.class)
-//    	                .handler(new ChannelInitializer<SocketChannel>() {
-//    	                    @Override
-//    	                    public void initChannel(SocketChannel channel) throws Exception {
-//    	                        channel.pipeline().addLast(handlers);
-////    	                            .addLast(new RpcEncoder(RpcRequest.class)) // 将 RPC 请求进行编码（为了发送请求）
-////    	                            .addLast(new RpcDecoder(RpcResponse.class)) // 将 RPC 响应进行解码（为了处理响应）
-////    	                            .addLast( new IdleStateHandler(0, 4, 0, TimeUnit.SECONDS))
-////    	                            .addLast(new RpcClientHandler(bootstrap,timer,host,port, true)); // 使用 RpcClient 发送 RPC 请求
-//    	                    }
-//    	                })
-//    	                .option(ChannelOption.SO_KEEPALIVE, true);
-//    	             future = bootstrap.connect(host, port).sync();
-//    	             NettyChannelLRUMap.add(keyString, (SocketChannel)future.channel());
-//    	             channel=future.channel();
-//		}
-//    	long innerl=System.currentTimeMillis();
-//    	 System.out.println("写入链接时间"+(System.currentTimeMillis()-start)+"ms");  
-////    	 for(int i=0;i<100;i++)
-////    	 {
-//    		 channel.writeAndFlush(request);     		
-//        	 synchronized (obj) {
-//        	       obj.wait(); 
-//        	 } 
-//    	// }    	
-//    	
-//         System.out.println("总运行时间"+(System.currentTimeMillis()-innerl)+"ms");
-//         response=new RpcResponse();
-//         response.setResult("fjdkf");
-//         return response;      
-//    }
+    }   
+
     public int getReqtimeout() {
 		return reqtimeout;
 	}

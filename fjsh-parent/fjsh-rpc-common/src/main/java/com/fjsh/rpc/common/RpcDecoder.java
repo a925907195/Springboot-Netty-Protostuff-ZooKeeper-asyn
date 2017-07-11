@@ -28,14 +28,21 @@ public class RpcDecoder extends ByteToMessageDecoder{
         }
         in.markReaderIndex();
         int dataLength = in.readInt();
+        System.out.println("data.length"+dataLength);
         if (dataLength < 0) {
             ctx.close();
         }
         if (in.readableBytes() < dataLength) {
             in.resetReaderIndex();
+            return ;
         }
         byte[] data = new byte[dataLength];
-        in.readBytes(data);
+        try {
+			in.readBytes(data);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
         Object obj = SerializationUtil.deserialize(data, genericClass);
         out.add(obj);

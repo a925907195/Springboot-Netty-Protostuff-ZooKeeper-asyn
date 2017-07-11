@@ -16,20 +16,20 @@
 	<dependencies>
 		<!-- Netty -->
 		<dependency>
-  <groupId>io.netty</groupId>
-  <artifactId>netty-all</artifactId>
-  <version>5.0.0.Alpha1</version>
-</dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>5.0.0.Alpha1</version>
+		</dependency>
 		<!-- Protostuff -->
 		<dependency>
 			<groupId>com.dyuproject.protostuff</groupId>
 			<artifactId>protostuff-core</artifactId>
-			<version>1.0.8</version>
+			<version>1.0.9</version>
 		</dependency>
 		<dependency>
 			<groupId>com.dyuproject.protostuff</groupId>
 			<artifactId>protostuff-runtime</artifactId>
-			<version>1.0.8</version>
+			<version>1.0.9</version>
 		</dependency>
 		<!-- Objenesis -->
 		<dependency>

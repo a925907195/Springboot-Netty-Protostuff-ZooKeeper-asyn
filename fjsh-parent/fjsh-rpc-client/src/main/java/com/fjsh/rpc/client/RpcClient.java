@@ -99,7 +99,8 @@ public void connect(final int port,final String host) throws Exception {
     	 for(int i=0;i<1000;i++)
     	 {    		 		
     		 Channel channel= NettyChannelLRUMap.get(keyString);
- 			channel.writeAndFlush(request);  
+ 			channel.writeAndFlush(request); 
+ 			
     	 }
 //         synchronized (obj) {
 //             obj.wait(reqtimeout); // 未收到响应，使线程等待2000ms
