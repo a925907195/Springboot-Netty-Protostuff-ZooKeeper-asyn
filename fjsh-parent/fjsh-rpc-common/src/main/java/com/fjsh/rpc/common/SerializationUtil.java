@@ -16,7 +16,7 @@ import com.dyuproject.protostuff.runtime.RuntimeSchema;
  *用户可以根据需要自己定制化序列化方式
  */
 public class SerializationUtil {
-
+//对schema做缓存，加快编解码速度
 	private static Map<Class<?>, Schema<?>> cachedSchema = new ConcurrentHashMap<Class<?>, Schema<?>>();
 
     private static Objenesis objenesis = new ObjenesisStd(true);
