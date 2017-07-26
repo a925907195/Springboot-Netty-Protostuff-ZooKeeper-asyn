@@ -101,12 +101,16 @@ public void connect(final int port,final String host) throws Exception {
 				connect(port, host);
 			}
     	}
-//    	 for(int i=0;i<10000;i++)
-//    	 {    		 		
-//    		 Channel channel= NettyChannelLRUMap.get(keyString);
-// 			channel.writeAndFlush(request); 
-// 			
-//    	 }
+    	
+    	long starts=System.currentTimeMillis();
+    	 for(int i=0;i<10000;i++)
+    	 {    		 		
+    		Channel channel= NettyChannelLRUMap.get(keyString);    		
+ 			channel.writeAndFlush(request); 
+ 			
+    	 }
+    	 long endtime=System.currentTimeMillis();
+    	 System.out.println("完成耗时："+((endtime-starts)/1000)+"s");
 //         synchronized (obj) {
 ////             obj.wait(reqtimeout); // 未收到响应，使线程等待2000ms
 //        	 obj.wait(5000); // 未收到响应，使线程等待2000ms

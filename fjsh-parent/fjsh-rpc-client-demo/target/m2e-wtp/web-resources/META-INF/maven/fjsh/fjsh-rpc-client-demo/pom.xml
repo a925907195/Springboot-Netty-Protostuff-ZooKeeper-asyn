@@ -38,6 +38,11 @@
 			<artifactId>spring-webmvc</artifactId>
 			<version>3.2.12.RELEASE</version>
 		</dependency>
+		<dependency>
+  <groupId>Junit</groupId>
+  <artifactId>Junit</artifactId>
+  <version>4.11</version>
+</dependency>
 	</dependencies>
 	<build>
 		<finalName>fjsh-rpc-client</finalName>

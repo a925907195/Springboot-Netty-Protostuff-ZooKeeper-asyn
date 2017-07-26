@@ -21,7 +21,6 @@ public class ServiceDiscovery {
 	private static final Logger logger = LoggerFactory.getLogger(ServiceDiscovery.class);
 	private Object waiter = new Object(); 
     private CountDownLatch latch = new CountDownLatch(1);
-
     private volatile List<String> dataList = new ArrayList<String>();
     private static ZooKeeper zk = null;  
     private String registryAddress;
@@ -36,7 +35,23 @@ public class ServiceDiscovery {
             watchNode(zk);
         }
     }
-    /**
+    public ServiceDiscovery(String registryAddress,int zk_session_timeout) {
+        this.registryAddress = registryAddress;
+        this.zk_session_timeout=zk_session_timeout;
+         zk = connectServer();
+        if (zk != null) {
+            watchNode(zk);
+        }
+    }
+    public String getZk_registry_path() {
+		return zk_registry_path;
+	}
+
+	public void setZk_registry_path(String zk_registry_path) {
+		this.zk_registry_path = zk_registry_path;
+	}
+
+	/**
      * 如果出现链接断开，session超时等情况，重新链接zk并重新对数据信息进行监听
      */
     public void reServiceDiscovery()

@@ -19,7 +19,7 @@ public class HelloController {
 	//http://localhost:8080/fjsh-rpc-client/hello?name=fjsdfhd324
 	@RequestMapping("/hello")
 	public void hello(String name){	
-		 IHelloService service = rpcProxy.create(IHelloService.class);
+		 IHelloService service = rpcProxy.create("registrytemp",IHelloService.class);
 		new Thread(new StatisticThread()).start();	
 //		for(int i=0;i<1000;i++)
 //		{

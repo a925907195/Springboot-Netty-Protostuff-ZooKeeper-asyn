@@ -14,17 +14,26 @@ public class RpcProxy {
 
 	private String serverAddress;
     private ServiceDiscovery serviceDiscovery;
-
+    private String registryAddress;
+    private int zk_session_timeout;
     public RpcProxy(String serverAddress) {
         this.serverAddress = serverAddress;
     }
 
-    public RpcProxy(ServiceDiscovery serviceDiscovery) {
+    public RpcProxy(String registryAddress,
+			int zk_session_timeout) {
+		super();
+		this.registryAddress = registryAddress;
+		this.zk_session_timeout = zk_session_timeout;
+	}
+
+	public RpcProxy(ServiceDiscovery serviceDiscovery) {
         this.serviceDiscovery = serviceDiscovery;
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T create(Class<?> interfaceClass) {
+    public <T> T create(final String zk_registry_path,Class<?> interfaceClass) {
+    	serviceDiscovery=new ServiceDiscovery(registryAddress, zk_session_timeout, "/"+zk_registry_path);
         return (T) Proxy.newProxyInstance(
             interfaceClass.getClassLoader(),
             new Class<?>[]{interfaceClass},
