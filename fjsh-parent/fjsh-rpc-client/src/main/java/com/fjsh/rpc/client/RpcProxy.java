@@ -2,6 +2,7 @@ package com.fjsh.rpc.client;
 
 import java.lang.reflect.Method;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.fjsh.rpc.common.RpcRequest;
 import com.fjsh.rpc.common.RpcResponse;
@@ -12,8 +13,9 @@ import net.sf.cglib.proxy.Proxy;
 
 public class RpcProxy {
 
-	private String serverAddress;
-    private ServiceDiscovery serviceDiscovery;
+	private String serverAddress;  
+	//保存不同服务信息对应的ServiceDiscovery对象
+    private static ConcurrentHashMap<String, ServiceDiscovery> serviceDisConcurrentHashMap=new ConcurrentHashMap<String, ServiceDiscovery>();
     private String registryAddress;
     private int zk_session_timeout;
     public RpcProxy(String serverAddress) {
@@ -27,14 +29,27 @@ public class RpcProxy {
 		this.zk_session_timeout = zk_session_timeout;
 	}
 
-	public RpcProxy(ServiceDiscovery serviceDiscovery) {
-        this.serviceDiscovery = serviceDiscovery;
-    }
+//	public RpcProxy(ServiceDiscovery serviceDiscovery) {
+//        this.serviceDiscovery = serviceDiscovery;
+//    }
 
+    /**
+     * @param zk_registry_path 服务对应的注册中心的名称
+     * @param interfaceClass 调用的服务类名称
+     * @return
+     */
     @SuppressWarnings("unchecked")
     public <T> T create(final String zk_registry_path,Class<?> interfaceClass) {
-    	serviceDiscovery=new ServiceDiscovery(registryAddress, zk_session_timeout, "/"+zk_registry_path);
-        return (T) Proxy.newProxyInstance(
+    	final ServiceDiscovery serviceDiscovery;
+    	if(serviceDisConcurrentHashMap.containsKey(zk_registry_path))
+    	{
+    		serviceDiscovery=serviceDisConcurrentHashMap.get(zk_registry_path);
+    	}
+    	else {
+    		serviceDiscovery=new ServiceDiscovery(registryAddress, zk_session_timeout, "/"+zk_registry_path);
+    		serviceDisConcurrentHashMap.put(zk_registry_path, serviceDiscovery);
+		}
+    	        return (T) Proxy.newProxyInstance(
             interfaceClass.getClassLoader(),
             new Class<?>[]{interfaceClass},
             new InvocationHandler() {
