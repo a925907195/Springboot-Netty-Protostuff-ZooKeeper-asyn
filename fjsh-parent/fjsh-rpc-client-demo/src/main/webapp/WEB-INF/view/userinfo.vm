@@ -1,0 +1,14 @@
+<html>
+    <head>
+        <title>Spring MVC and Velocity</title>
+    </head>
+    <body>
+        <h1>Spring MVC and Velocity</h1>
+        
+        my name is: $user.name
+		<p>
+		my birthday is:$user.birthday
+        <hr />
+        Copyright &copy 2017 fjsh
+    </body>
+</html>

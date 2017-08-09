@@ -103,12 +103,12 @@ public void connect(final int port,final String host) throws Exception {
     	}
     	
     	long starts=System.currentTimeMillis();
-    	 for(int i=0;i<10000;i++)
-    	 {    		 		
+//    	 for(int i=0;i<10000;i++)
+//    	 {    		 		
     		Channel channel= NettyChannelLRUMap.get(keyString);    		
  			channel.writeAndFlush(request); 
  			
-    	 }
+    	// }
     	 long endtime=System.currentTimeMillis();
     	 System.out.println("完成耗时："+((endtime-starts)/1000)+"s");
 //         synchronized (obj) {

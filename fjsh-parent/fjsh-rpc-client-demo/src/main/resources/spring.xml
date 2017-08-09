@@ -10,12 +10,15 @@
            http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
     <!-- 启用spring mvc 注解 -->
     <context:annotation-config />
+     <import resource="classpath:spring-mvc.xml"/>
     <!-- 完成请求和注解POJO的映射 -->
     <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
     <!-- 对转向页面的路径解析。prefix：前缀， suffix：后缀 -->
-    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:prefix="/WEB-INF/jsp/" p:suffix=".jsp" />
-    <context:component-scan base-package="com.fjsh.rpc" />
+   <!--  <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:prefix="/WEB-INF/jsp/" p:suffix=".jsp" />
+  -->   
+   <context:component-scan base-package="com.fjsh.rpc" />
     <context:property-placeholder location="classpath:config.properties"/>
+   
     <!-- 配置服务发现组件 -->
 <!--     <bean id="serviceDiscovery" class="com.fjsh.rpc.client.ServiceDiscovery">
         <constructor-arg name="registryAddress" value="${registry.address}"/>

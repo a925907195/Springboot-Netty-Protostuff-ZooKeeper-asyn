@@ -13,7 +13,7 @@ import com.fjsh.rpc.service.IHelloService;
 public class HelloServiceImpl implements IHelloService {
 
 	public String hello(String name) {
-		String result = "hello" + name;
+		String result = "hello " + name;
 		System.out.println(result);
 		return result;
 	}
@@ -28,7 +28,7 @@ public class HelloServiceImpl implements IHelloService {
 	public List<User> getUsers(int size) {
 		List<User> list = new ArrayList<User>();
 		User user = null;
-		String name = "foo";
+		String name = "fjsh";
 		Date birthday = new Date();
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(birthday);
